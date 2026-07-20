@@ -14,11 +14,19 @@ WORKDIR /usr/src/app
 # OPTIMIZATION: Install heavy build dependencies FIRST (cached permanently)
 RUN apt-get update && apt-get install -y python3 make g++ git python3-pip pkg-config libsecret-1-dev && rm -rf /var/lib/apt/lists/*
 
-# Copy source code (invalidates cache only from here downwards)
-COPY . /usr/src/app
+# OPTIMIZATION: Copy package files first to cache pnpm install (cached permanently unless lockfile/packages change)
+COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
+COPY apps/api/package.json ./apps/api/
+COPY apps/dokploy/package.json ./apps/dokploy/
+COPY apps/monitoring/package.json ./apps/monitoring/
+COPY apps/schedules/package.json ./apps/schedules/
+COPY packages/server/package.json ./packages/server/
 
-# Install dependencies
+# Install dependencies (100% cached if lockfile / package.jsons don't change)
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+
+# Copy the rest of the source code (only invalidates cache from here downwards)
+COPY . /usr/src/app
 
 # Build applications
 ENV NODE_ENV=production
