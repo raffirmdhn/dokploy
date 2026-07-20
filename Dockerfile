@@ -18,7 +18,6 @@ RUN apt-get update && apt-get install -y python3 make g++ git python3-pip pkg-co
 COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
 COPY apps/api/package.json ./apps/api/
 COPY apps/dokploy/package.json ./apps/dokploy/
-COPY apps/monitoring/package.json ./apps/monitoring/
 COPY apps/schedules/package.json ./apps/schedules/
 COPY packages/server/package.json ./packages/server/
 
