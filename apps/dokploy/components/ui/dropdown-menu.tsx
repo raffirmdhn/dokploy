@@ -60,7 +60,7 @@ function DropdownMenuContent({
 				)}
 				onInteractOutside={(event) => {
 					const originalEvent = event.detail.originalEvent;
-					if (originalEvent instanceof FocusEvent) {
+					if (originalEvent?.type?.startsWith("focus") || originalEvent?.type?.startsWith("blur")) {
 						event.preventDefault();
 						return;
 					}
