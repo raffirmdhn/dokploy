@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { api } from "@/utils/api";
 import { ImpersonationBar } from "../dashboard/impersonation/impersonation-bar";
 import { HubSpotWidget } from "../shared/HubSpotWidget";
@@ -17,6 +18,16 @@ export const DashboardLayout = ({ children }: Props) => {
 		refetchOnMount: false,
 		refetchOnReconnect: false,
 	});
+
+	useEffect(() => {
+		const handleBlur = (e: Event) => {
+			e.stopImmediatePropagation();
+		};
+		window.addEventListener("blur", handleBlur, true);
+		return () => {
+			window.removeEventListener("blur", handleBlur, true);
+		};
+	}, []);
 
 	const isChatEnabled = isCloud === true && currentPlan === "startup";
 
